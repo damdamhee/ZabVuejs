@@ -1,0 +1,22 @@
+{
+  "name": "zabvuejs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/damdamhee/CopyVuejs.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/damdamhee/CopyVuejs/issues"
+  },
+  "homepage": "https://github.com/damdamhee/CopyVuejs#readme",
+  "devDependencies": {
+    "http-server": "^0.12.3"
+  }
+}
