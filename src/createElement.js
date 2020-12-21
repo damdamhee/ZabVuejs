@@ -3,6 +3,7 @@
 */
 export default function createElement(tagName, attrs, children=[]) {
   return {
+    self: this,
     tagName,
     attrs,
     children,

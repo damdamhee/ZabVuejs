@@ -25,5 +25,6 @@ export default function render(element) {
     }
   }
 
+  element.self.rootNode = elementNode;
   return elementNode;
 }
