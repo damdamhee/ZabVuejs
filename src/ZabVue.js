@@ -9,6 +9,7 @@ export default class ZabVue {
     //set lifecycle methods;
     this.onCreated = attributes.onCreated || (() => {});
     this.onMounted = attributes.onMounted || (() => {});
+    this.onBeforeUpdate = attributes.onBeforeUpdate || (() => {})
     this.onUpdated = attributes.onUpdated || (() => {});
 
     //apply reactive properties
@@ -44,8 +45,10 @@ export default class ZabVue {
     //dependencyTable을 생성한 후, 만약 데이터에 변경이 발생한다면, 화면을 갱신해야 한다 (다시 마운트 호출)
   }
   update(newVRootNode) {
+    this.onBeforeUpdate();
     let newRootElement = render.call(this, newVRootNode , false);
     this.rootElement.replaceWith(newRootElement);
+    this.onUpdated();
   }
   /*
     마운트 : 이미 DOM 트리가 구성된 상태이다.

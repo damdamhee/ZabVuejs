@@ -6,7 +6,6 @@ export default function createData(dataFunc) {
   let updateScreen = () => {
     let newVRootElement = this.render();
     this.update(newVRootElement);
-    this.onUpdated();
   };
 
   let data = {};
