@@ -32,7 +32,8 @@ export default class ZabVue {
 
     this.render = () => {
       //VNode를 리턴한다
-      this.vRootElement = createElementFunc.call(this, createElement);
+      let bindedCreateElement = createElement.bind(this);
+      this.vRootElement = createElementFunc.call(this, bindedCreateElement);
       this.vRootElement.isRoot = true;
       return this.vRootElement;
     };
