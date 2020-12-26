@@ -13,7 +13,12 @@ export default class ZabVue {
 
     //apply reactive properties
     this.props = attributes.props;
-    this.components = attributes.components; //자식 VDOM 노드
+    // this.components = attributes.components; //자식 VDOM 노드
+    this.components = {};
+    Object.keys(attributes.components).forEach(key => {
+      this.components[key] = attributes.components[key].vRootElement;
+    })
+    
     this.data = createData.call(
       this,
       attributes.data ||
