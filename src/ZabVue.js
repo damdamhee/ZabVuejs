@@ -26,24 +26,32 @@ export default class ZabVue {
     let createElementFunc = attributes.render;
 
     this.render = () => {
-      this.rootElement = createElementFunc.call(this, createElement);
-      this.rootNode = render.call(this, this.rootElement);
-      return this.rootNode;
+      //VNode를 리턴한다
+      this.vRootElement = createElementFunc.call(this, createElement);
+      this.vRootElement.isRoot = true;
+      return this.vRootElement;
     };
-
-    //ZabVue 객체 생성 시에는 단순히 VDOM 객체만 생성한 상태이다
-    this.rootElement = createElementFunc.call(this, createElement);
+    this.render();
 
     this.onCreated();
+
     //dependencyTable을 생성한 후, 만약 데이터에 변경이 발생한다면, 화면을 갱신해야 한다 (다시 마운트 호출)
   }
+  update(newVRootNode) {
+    let newRootElement = render.call(this, newVRootNode , false);
+    this.rootElement.replaceWith(newRootElement);
+  }
+  /*
+    마운트 : 이미 DOM 트리가 구성된 상태이다.
+  */
   mount(targetElementId) {
     //targetElementId에 해당하는 DOM에 마운트
     let targetElementNode = document.getElementById(targetElementId);
     try {
-      this.render();
-      targetElementNode.replaceWith(this.rootNode);
+      let newRootElement = render.call(this, this.vRootElement);
+      targetElementNode.replaceWith(newRootElement);
     } catch (error) {
+      console.log(error);
       console.log(`Cannot Find DOM with ID ${targetElementNode}`);
       return;
     }

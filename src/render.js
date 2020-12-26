@@ -8,6 +8,7 @@ export default function render(element) {
     elementNode = document.createElement(element.tagName);
   } catch (error) {
     elementNode = document.createTextNode(element.tagName);
+    return elementNode;
   }
 
   //Attribute 설정
@@ -25,6 +26,15 @@ export default function render(element) {
     }
   }
 
-  element.self.rootNode = elementNode;
+  /*
+    하나의 컴포넌트는 여러 n-depth element로 구성될 수 있고,
+    이때의 root는 오직 최상위 element이어야만 한다.
+    render()는 mount 단계뿐만 아니라 update 단계에서도 호출되므로
+    !element.self.rootElement 검증이 필요하다
+  */
+  if (element.isRoot && !element.self.rootElement) {
+    element.self.rootElement = elementNode;
+  }
+
   return elementNode;
 }
