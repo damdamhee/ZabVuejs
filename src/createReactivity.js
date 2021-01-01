@@ -7,6 +7,9 @@ class Dependency {
   constructor(defaults){
     this.defaults = defaults;
     this.subscribers = []
+    //for watch parameters
+    this.prevValue = undefined;
+    this.newValue = undefined;
   }
   depend(){
     //targetFunction은 createComputed, createWatch 모듈에 정의된 변수이다
@@ -16,7 +19,7 @@ class Dependency {
   }
   notify(){
     this.subscribers.forEach(targetFunction => {
-      targetFunction();
+      targetFunction(this.newValue, this.prevValue);
     })
     this.defaults.forEach(defaultFunction => {
       defaultFunction();
@@ -42,7 +45,9 @@ export function createData(dataFunc) {
         return target["value"];
       },
       set: function (obj, _, value) {
+        dependency.prevValue = obj["value"];
         obj["value"] = value;
+        dependency.newValue = value; 
         dependency.notify();
         return true;
       },
@@ -68,4 +73,24 @@ export function createComputed(computed){
     bindedComputed[key] = bindedComputedFunction;
   })
   return bindedComputed;
+}
+
+export function createWatch(watch){
+  /*
+    1. 어떤 데이터 값에 변화가 발생한다
+    2. watch 함수가 호출된다
+    - computed와는 달리 특정 data변수 하나만 주시한다
+    - watch함수는 data변수와 동일한 이름을 갖는다
+  */
+ 
+  let bindedWatch = {};
+  Object.keys(watch).forEach(key => {
+    let watchFunction = watch[key];
+    let bindedWatchFunction = watchFunction.bind(this);
+    targetFunction = bindedWatchFunction;
+    this.data[key].value; //데이터 getter가 호출되면서 subscriber에 watch함수가 추가된다
+    targetFunction = null;
+    bindedWatch[key] = bindedWatchFunction;
+  })
+  return bindedWatch;
 }

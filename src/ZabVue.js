@@ -1,5 +1,5 @@
 import createElement from "./createElement.js";
-import { createData, createComputed } from "./createReactivity.js";
+import { createData, createComputed, createWatch } from "./createReactivity.js";
 import render from "./render.js";
 
 export default class ZabVue {
@@ -33,7 +33,7 @@ export default class ZabVue {
     //computed
     this.computed = createComputed.call(this, attributes.computed || {});
 
-
+    this.watch = createWatch.call(this, attributes.watch || {});
 
     let createElementFunc = attributes.render;
     this.render = () => {
