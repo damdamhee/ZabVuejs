@@ -1,5 +1,5 @@
 import createElement from "./createElement.js";
-import createData from "./createData.js";
+import { createData, createComputed } from "./createReactivity.js";
 import render from "./render.js";
 
 export default class ZabVue {
@@ -20,6 +20,7 @@ export default class ZabVue {
       this.components[key] = attributes.components[key].vRootElement;
     })
     
+    //data
     this.data = createData.call(
       this,
       attributes.data ||
@@ -29,8 +30,12 @@ export default class ZabVue {
     );
     this.methods = attributes.methods;
 
-    let createElementFunc = attributes.render;
+    //computed
+    this.computed = createComputed.call(this, attributes.computed || {});
 
+
+
+    let createElementFunc = attributes.render;
     this.render = () => {
       //VNode를 리턴한다
       let bindedCreateElement = createElement.bind(this);
@@ -44,9 +49,12 @@ export default class ZabVue {
 
     //dependencyTable을 생성한 후, 만약 데이터에 변경이 발생한다면, 화면을 갱신해야 한다 (다시 마운트 호출)
   }
+
   update(newVRootNode) {
     this.onBeforeUpdate();
     let newRootElement = render.call(this, newVRootNode , false);
+
+    //this.rootElement는 초기에 mount과정에서 호출되는 render()에서 설정되는 값이다
     this.rootElement.replaceWith(newRootElement);
     this.onUpdated();
   }
