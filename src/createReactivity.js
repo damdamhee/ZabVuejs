@@ -53,3 +53,19 @@ export function createData(dataFunc) {
 
   return data;
 }
+export function createComputed(computed){
+  /*
+    1. computed 객체 내에 정의된 각각의 속성에 대해서
+    2. 함수를 한 번 씩 호출한다
+  */
+  let bindedComputed = {};
+  Object.keys(computed).forEach(key => {
+    let computedFunction = computed[key];
+    let bindedComputedFunction = computedFunction.bind(this);
+    targetFunction = bindedComputedFunction;
+    targetFunction();
+    targetFunction = null;
+    bindedComputed[key] = bindedComputedFunction;
+  })
+  return bindedComputed;
+}
