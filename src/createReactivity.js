@@ -88,7 +88,8 @@ export function createWatch(watch){
     let watchFunction = watch[key];
     let bindedWatchFunction = watchFunction.bind(this);
     targetFunction = bindedWatchFunction;
-    this.data[key].value; //데이터 getter가 호출되면서 subscriber에 watch함수가 추가된다
+    //todo - key라는 이름의 변수가 data에 존재하지 않으면 예외가 발생하도록 변경할 것
+    this[key].value; //데이터 getter가 호출되면서 subscriber에 watch함수가 추가된다
     targetFunction = null;
     bindedWatch[key] = bindedWatchFunction;
   })

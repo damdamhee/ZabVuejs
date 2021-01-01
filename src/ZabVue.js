@@ -21,17 +21,25 @@ export default class ZabVue {
     })
     
     //data
-    this.data = createData.call(
+    let data = createData.call(
       this,
       attributes.data ||
         (() => {
           return {};
         })
     );
+    Object.keys(data).forEach(key => {
+      this[key] = data[key];
+    })
+
     this.methods = attributes.methods;
 
     //computed
-    this.computed = createComputed.call(this, attributes.computed || {});
+    let computed = createComputed.call(this, attributes.computed || {});
+    Object.keys(computed).forEach(key => {
+      //todo - data, watch와 동일한 이름을 갖는 경우 Exception을 발생시키도록 할 필요가 있다
+      this[key] = computed[key];
+    })
 
     this.watch = createWatch.call(this, attributes.watch || {});
 
