@@ -82,5 +82,6 @@ export default class ZabVue {
     }
 
     this.onMounted();
+    console.log(this)
   }
 }

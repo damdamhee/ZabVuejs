@@ -63,14 +63,27 @@ export function createComputed(computed){
     1. computed 객체 내에 정의된 각각의 속성에 대해서
     2. 함수를 한 번 씩 호출한다
   */
+  //todo - computed 변수를 그냥 접근할 수 있도록 변경할 필요가 있다
+  //접근 시 getter를 통해 함수 호출 결과값을 전달
   let bindedComputed = {};
   Object.keys(computed).forEach(key => {
     let computedFunction = computed[key];
     let bindedComputedFunction = computedFunction.bind(this);
     targetFunction = bindedComputedFunction;
+
+    let refObj = {
+      value : targetFunction
+    } 
+    let handler = {
+      get: function(target, _){
+        return target.value();
+      },
+      set: function(obj, _, value){}
+    }
+    bindedComputed[key] = new Proxy(refObj, handler);
+
     targetFunction();
     targetFunction = null;
-    bindedComputed[key] = bindedComputedFunction;
   })
   return bindedComputed;
 }
