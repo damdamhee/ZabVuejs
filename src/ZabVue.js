@@ -32,6 +32,11 @@ export default class ZabVue {
       this[key] = data[key];
     })
 
+    let methods = attributes.methods;
+    Object.keys(methods).forEach(key => {
+      //data, watch, computed와 겹치는게 없는지 확인하는 로직 필요
+      this[key] = methods[key];
+    })
     this.methods = attributes.methods;
 
     //computed
