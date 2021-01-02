@@ -1,5 +1,6 @@
 {
   "name": "zabvuejs",
+  "type": "module",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/damdamhee/CopyVuejs.git"
+    "url": "git+https://github.com/damdamhee/ZabVuejs.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/damdamhee/CopyVuejs/issues"
+    "url": "https://github.com/damdamhee/ZabVuejs/issues"
   },
-  "homepage": "https://github.com/damdamhee/CopyVuejs#readme",
+  "homepage": "https://github.com/damdamhee/ZabVuejs#readme",
   "devDependencies": {
     "http-server": "^0.12.3"
   }
