@@ -1,6 +1,11 @@
 import createElement from "./createElement.js";
 import { createData, createComputed, createWatch } from "./createReactivity.js";
 import render from "./render.js";
+import { AlreadyDefinedError, DuplicateComponentsDefinedError } from "./errors.js";
+
+function hasProperty(property){
+  return Object.getOwnPropertyNames(this).includes(property);
+}
 
 export default class ZabVue {
   constructor(attributes) {
@@ -14,12 +19,15 @@ export default class ZabVue {
 
     //apply reactive properties
     this.props = attributes.props;
+
     // this.components = attributes.components; //자식 VDOM 노드
     this.components = {};
     Object.keys(attributes.components).forEach(key => {
+      if(hasProperty.call(this.components, key)) 
+        throw new DuplicateComponentsDefinedError(`${key} is already defined`);
       this.components[key] = attributes.components[key].vRootElement;
     })
-    
+
     //data
     let data = createData.call(
       this,
@@ -29,28 +37,36 @@ export default class ZabVue {
         })
     );
     Object.keys(data).forEach(key => {
+      if(hasProperty.call(this, key))
+        throw new AlreadyDefinedError(`${key} is already defined`)
       this[key] = data[key];
     })
-
-    let methods = attributes.methods;
-    Object.keys(methods).forEach(key => {
-      //data, watch, computed와 겹치는게 없는지 확인하는 로직 필요
-      this[key] = methods[key];
-    })
-    this.methods = attributes.methods;
 
     //computed
     let computed = createComputed.call(this, attributes.computed || {});
     Object.keys(computed).forEach(key => {
       //todo - data, watch와 동일한 이름을 갖는 경우 Exception을 발생시키도록 할 필요가 있다
+      if(hasProperty.call(this, key))
+        throw new AlreadyDefinedError(`${key} is already defined`)
       this[key] = computed[key];
     })
 
+    //watch
     this.watch = createWatch.call(this, attributes.watch || {});
+
+    //methods
+    let methods = attributes.methods;
+    Object.keys(methods).forEach(key => {
+      //data, watch, computed와 겹치는게 없는지 확인하는 로직 필요
+      if(hasProperty.call(this, key))
+        throw new AlreadyDefinedError(`${key} is already defined`)
+      this[key] = methods[key];
+    })
+    this.methods = attributes.methods;
+
 
     let createElementFunc = attributes.render;
     this.render = () => {
-      //VNode를 리턴한다
       let bindedCreateElement = createElement.bind(this);
       this.vRootElement = createElementFunc.call(this, bindedCreateElement);
       this.vRootElement.isRoot = true;
@@ -60,7 +76,6 @@ export default class ZabVue {
 
     this.onCreated();
 
-    //dependencyTable을 생성한 후, 만약 데이터에 변경이 발생한다면, 화면을 갱신해야 한다 (다시 마운트 호출)
   }
 
   update(newVRootNode) {
@@ -81,8 +96,8 @@ export default class ZabVue {
       let newRootElement = render.call(this, this.vRootElement);
       targetElementNode.replaceWith(newRootElement);
     } catch (error) {
-      console.log(error);
-      console.log(`Cannot Find DOM with ID ${targetElementNode}`);
+      console.error(error);
+      console.error(`Cannot Find DOM with ID ${targetElementNode}`);
       return;
     }
 
